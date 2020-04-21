@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: ${application_name:order-server}
+  datasource:
+    url: jdbc:mysql://localhost:3306/train_db?autoReconnect=true&useSSL=false&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 8803
+eureka:
+  client:
+    registry-fetch-interval-seconds: 30 # 指示从eureka服务器获取注册表信息的频率（s）
+    service-url:
+      defaultZone: http://peer1:8801/eureka
+  instance:
+    instance-id: ${spring.application.name}-${random.int}
+    lease-expiration-duration-in-seconds: 90 #定义服务失效时间
+    lease-renewal-interval-in-seconds: 30 #续约时间
+    hostname: peer1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always # 配置显示health节点的详细信息

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ${application_name:eureka-server}
+server:
+  port: 8801
+eureka:
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 60000
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    registry-fetch-interval-seconds: 30
+  instance:
+    instance-id: ${spring.application.name}-${random.int}
+    lease-expiration-duration-in-seconds: 90 #定义服务失效时间
+    lease-renewal-interval-in-seconds: 30 #续约时间
+    hostname: peer1
