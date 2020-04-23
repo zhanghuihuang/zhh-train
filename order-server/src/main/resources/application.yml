@@ -48,4 +48,4 @@ INVENTORY-SERVER:
     MaxAutoRetriesNextServer: 2 #更换实例访问的次数
 feign:
   hystrix:
-    enabled=false:
+    enabled: true
