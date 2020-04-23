@@ -9,19 +9,24 @@ import java.util.*;
  * @date : 2020/4/22 10:41 上午
  */
 public class MyArrayList<E> implements List<E> {
-    private Object[] table;
-    private static final Object[] EMPTY_TABLE = {};
-    private int capacity = 8;
+    private Object[] elementData;
+    private static final Object[] EMPTY_ELEMENT_DATA = {};
+    private static final int DEFAULT_CAPACITY = 10;
     private float capacityThreshold = 0.75f;  //容量阈值,超过75%时,进行扩容
     private int size = 0;
 
     public MyArrayList() {
-        this.table = new Object[this.capacity];
+        this.elementData = new Object[DEFAULT_CAPACITY];
     }
 
-    public MyArrayList(int capacity) {
-        this.capacity = capacity;
-        this.table = new Object[this.capacity];
+    public MyArrayList(int initialCapacity) {
+        if (initialCapacity > 0) {
+            this.elementData = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            this.elementData = EMPTY_ELEMENT_DATA;
+        } else {
+            throw new IllegalArgumentException("Illegal Capacity:" + initialCapacity);
+        }
     }
 
     @Override
@@ -39,9 +44,17 @@ public class MyArrayList<E> implements List<E> {
         if (size == 0) {
             return false;
         }
-        for (int i = 0; i < size; i++) {
-            if (table[i].equals(o)) {
-                return true;
+        if (o == null) {
+            for (int i = 0; i < size; i++) {
+                if (elementData[i] == null) {
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (elementData[i].equals(o)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -54,17 +67,31 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public Object[] toArray() {
-        return Arrays.copyOf(table, size);
+        return Arrays.copyOf(elementData, size);
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        return null;
+        if (a.length < size) {
+            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+        }
+        System.arraycopy(elementData, 0, a, 0, size);
+        if (a.length > size) {
+            a[size] = null;
+        }
+        return a;
     }
 
     @Override
     public boolean add(E e) {
+        //判断是否需要扩容
+        ensureCapacityInternal(size + 1);
+        //添加到数组最后面
         return false;
+    }
+
+    private void ensureCapacityInternal(int minCapacity) {
+
     }
 
     @Override
@@ -99,13 +126,15 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public void clear() {
+        for (int i = 0; i < size; i++) {
+            elementData[i] = null;
+        }
         size = 0;
-        this.table = EMPTY_TABLE;
     }
 
     @Override
     public E get(int index) {
-        return (E) table[index];
+        return (E) elementData[index];
     }
 
     @Override
@@ -123,12 +152,12 @@ public class MyArrayList<E> implements List<E> {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("数组下标越界");
         }
-        E oldValue = (E) table[index];
+        E oldValue = (E) elementData[index];
         int numMoved = size - index - 1;
         if (numMoved > 0) {
-            System.arraycopy(table, index + 1, table, index, numMoved);
+            System.arraycopy(elementData, index + 1, elementData, index, numMoved);
         }
-        table[--size] = null;
+        elementData[--size] = null;
         return oldValue;
     }
 

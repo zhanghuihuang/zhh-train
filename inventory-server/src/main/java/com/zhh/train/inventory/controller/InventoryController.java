@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author : zhanghuihuang
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class InventoryController implements InventoryV3Api {
     @Autowired
     private InventoryService inventoryService;
+    private static volatile AtomicInteger visitCount = new AtomicInteger(0);
 
     @Override
     public String decrementInventory(@PathVariable String product, @PathVariable int quantity) {
@@ -29,8 +31,11 @@ public class InventoryController implements InventoryV3Api {
 
     @Override
     public String decrementInventoryTimeout(@PathVariable String product, @PathVariable int quantity) {
+        int i = visitCount.addAndGet(1);
         try {
-            TimeUnit.SECONDS.sleep(RandomUtils.nextInt(2) + 2);
+            int timeout = RandomUtils.nextInt(3000) + 2000;
+            System.out.println("访问次数:" + i + ",耗时:" + timeout);
+            TimeUnit.MILLISECONDS.sleep(timeout);
         } catch (InterruptedException e) {
 
         }

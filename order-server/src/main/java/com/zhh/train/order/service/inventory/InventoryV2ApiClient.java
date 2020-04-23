@@ -32,7 +32,7 @@ public class InventoryV2ApiClient {
      */
     @HystrixCommand(
             commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "8000")
             }
     )
     public String decrementInventoryTimeout(String product, int quantity) {
@@ -49,7 +49,7 @@ public class InventoryV2ApiClient {
     @HystrixCommand(
             fallbackMethod = "defaultDecrementInventoryFallback",
             commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "8000")
             }
     )
     public String decrementInventoryFallback(String product, int quantity) {

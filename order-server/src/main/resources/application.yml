@@ -6,6 +6,12 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+      ribbon:
+        enabled: true
 server:
   port: 8803
 eureka:
@@ -26,3 +32,20 @@ management:
   endpoint:
     health:
       show-details: always # 配置显示health节点的详细信息
+
+ribbon:
+  ConnectTimeout: 4000 #该参数可以用来设置创建请求连接的超时时间
+  ReadTimeout: 1000 #设置请求的超时时间,指的是连接建立之后的处理时间
+  OkToRetryOnAllOperations: true
+  MaxAutoRetries: 1 # 重试策略先尝试访问首选实例一次，失败后才更换实例访问
+  MaxAutoRetriesNextServer: 2 #更换实例访问的次数
+INVENTORY-SERVER:
+  ribbon:
+    ConnectTimeout: 4000 #该参数可以用来设置创建请求连接的超时时间
+    ReadTimeout: 1000 #设置请求的超时时间,指的是连接建立之后的处理时间
+    OkToRetryOnAllOperations: true
+    MaxAutoRetries: 1 # 重试策略先尝试访问首选实例一次，失败后才更换实例访问
+    MaxAutoRetriesNextServer: 2 #更换实例访问的次数
+feign:
+  hystrix:
+    enabled=false:
