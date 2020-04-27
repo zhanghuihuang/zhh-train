@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <title>首页</title>
+    <link rel="stylesheet" href="/css/main.css" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<h1>Hello Spring Security</h1>
+<p>这个页面不受保护</p>
+<div>
+    <ul>
+        <li>点击<a href="/login" th:href="@{/login}">登陆页面</a></li>
+    </ul>
+</div>
+<div th:fragment="logout" sec:authorize="isAuthenticated()">
+    <p>登陆用户:<span sec:authentication="name"></span></p>
+    <p>用户角色:<span sec:authentication="principal.authorities"></span></p>
+    <div>
+        <form action="#" th:action="@{/logout}" method="post">
+            <input type="submit" value="登出"/>
+        </form>
+    </div>
+</div>
+<ul>
+    <li>点击<a href="/order/index" th:href="@{/order/index}">去订单首页</a></li>
+    <li>点击<a href="/inventory/index" th:href="@{/inventory/index}">去库存首页</a></li>
+</ul>
+</body>
+</html>

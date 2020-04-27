@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <title>订单首页</title>
+    <link rel="stylesheet" href="/css/main.css" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<h1>Order</h1>
+<div th:substituteby="index::logout"></div>
+<p>这个页面受保护</p>
+<div>
+    <ul>
+        <li>点击<a href="/index" th:href="@{/index}">去首页</a></li>
+        <li>点击<a href="/order" th:href="@{/order}">获取订单列表</a></li>
+    </ul>
+</div>
+
+</body>
+</html>

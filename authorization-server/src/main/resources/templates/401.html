@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <title>401</title>
+    <link rel="stylesheet" href="/css/main.css" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<h1>权限不够</h1>
+<div>
+    <div sec:authorize="isAuthenticated()">
+        <p>已有用户登陆</p>
+        <p>登陆用户:<span sec:authentication="name"></span></p>
+        <p>用户角色:<span sec:authentication="principal.authorities"></span></p>
+    </div>
+    <div sec:authorize="isAnonymous()">
+        <p>没有用户登陆</p>
+    </div>
+</div>
+</body>
+</html>
