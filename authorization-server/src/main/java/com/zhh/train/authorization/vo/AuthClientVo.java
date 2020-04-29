@@ -2,6 +2,7 @@ package com.zhh.train.authorization.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 
@@ -17,7 +18,7 @@ import java.util.Set;
  * @date : 2020/4/25 7:40 下午
  */
 @AllArgsConstructor
-public class AuthClientVo implements ClientDetails {
+public class AuthClientVo implements ClientDetails, CredentialsContainer {
 
     private String clientName;
     @JsonIgnore
@@ -160,5 +161,10 @@ public class AuthClientVo implements ClientDetails {
     @Override
     public Map<String, Object> getAdditionalInformation() {
         return this.additionalInformation;
+    }
+
+    @Override
+    public void eraseCredentials() {
+        this.password = null;
     }
 }

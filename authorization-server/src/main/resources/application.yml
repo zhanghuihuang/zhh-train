@@ -36,3 +36,6 @@ eureka:
     hostname: peer1
 server:
   port: 9000
+logging:
+  level:
+    root: info

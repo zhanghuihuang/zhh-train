@@ -3,6 +3,7 @@ package com.zhh.train.authorization.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zhh.train.authorization.enums.StatusEnum;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -30,16 +31,24 @@ public class Client extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
     @Column(name = "grant_types")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @Type(type = "CollectionToString", parameters = {
+            @org.hibernate.annotations.Parameter(name = "collectionType", value = "java.util.HashSet")
+    })
     private Set<String> grantTypes;
     @Column(name = "resource_ids")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @Type(type = "CollectionToString", parameters = {
+            @org.hibernate.annotations.Parameter(name = "collectionType", value = "java.util.HashSet")
+    })
     private Set<String> resourceIds;
     @Column(name = "registered_redirect_uri")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @Type(type = "CollectionToString", parameters = {
+            @org.hibernate.annotations.Parameter(name = "collectionType", value = "java.util.HashSet")
+    })
     private Set<String> registeredRedirectUri;
     @Column(name = "scope")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @Type(type = "CollectionToString", parameters = {
+            @org.hibernate.annotations.Parameter(name = "collectionType", value = "java.util.HashSet")
+    })
     private Set<String> scope;
     private Integer accessTokenValiditySeconds;
     private Integer refreshTokenValiditySeconds;

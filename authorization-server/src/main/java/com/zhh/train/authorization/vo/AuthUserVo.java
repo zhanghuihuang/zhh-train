@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zhh.train.authorization.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
@@ -16,7 +17,7 @@ import java.util.Set;
  */
 @Getter
 @AllArgsConstructor
-public class AuthUserVo implements UserDetails {
+public class AuthUserVo implements UserDetails, CredentialsContainer {
     private Long id;
     private String username;
     @JsonIgnore
@@ -48,5 +49,13 @@ public class AuthUserVo implements UserDetails {
     @Override
     public boolean isEnabled() {
         return status == StatusEnum.ENABLED;
+    }
+
+    /**
+     * 删除凭据,用于清除敏感信息
+     */
+    @Override
+    public void eraseCredentials() {
+        this.password = null;
     }
 }

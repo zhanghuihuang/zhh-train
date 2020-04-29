@@ -22,7 +22,7 @@ public class AuditorAwareConfig {
     public AuditorAware auditorAware() {
         return () -> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            return Optional.of(authentication.getPrincipal().toString());
+            return Optional.of(authentication.getName());
         };
     }
 

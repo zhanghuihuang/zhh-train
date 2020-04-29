@@ -12,11 +12,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
 import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * @author : page
@@ -35,11 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     /**
@@ -83,15 +78,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/css/**", "index").permitAll()
-                .antMatchers("/inventory/**").hasRole("admin")
-                .antMatchers("/order/**").hasAnyRole("admin", "user")
+        /*http.formLogin().loginPage("/login").failureForwardUrl("/login-error").permitAll() // 配置登陆页/login并允许访问
+                // 登出页
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/")
+                .and().authorizeRequests()
+                .antMatchers("/css/**", "index").permitAll()  //允许访问任何静态资源
+                .antMatchers("/oauth/authorize", "/oauth/token").permitAll()
+                // 其余所有请求全部需要鉴权认证
+                .anyRequest().authenticated()
+                .and().exceptionHandling().accessDeniedPage("/401")
+                // 由于使用的是oauth2，我们这里不需要csrf
+                .and().csrf().disable();*/
+
+        http
+                .authorizeRequests()
+                .antMatchers("/login", "/doLogin", "/logout", "/oauth/authorize", "/oauth/token").permitAll()
                 .and()
-                .formLogin().loginPage("/login").failureForwardUrl("/login-error")
+                .exceptionHandling()
+                .accessDeniedPage("/login?authorization_error=true")
                 .and()
-                .exceptionHandling().accessDeniedPage("/401");
-        http.logout().logoutSuccessUrl("/");
+                // put CSRF protection back into this endpoint
+                .csrf()
+                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/oauth/authorize"))
+                .disable()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .and()
+                .formLogin()
+                .loginProcessingUrl("/doLogin")
+                .failureUrl("/login?authentication_error=true")
+                .loginPage("/login");
     }
 
     public static void main(String[] args) {

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author : page
@@ -28,9 +29,12 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
+    private AtomicInteger atomicInteger = new AtomicInteger(0);
+
     @Override
     @Transactional
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
+        System.out.println(atomicInteger.getAndIncrement());
         Client client = clientRepository.findByClientName(clientId).orElseThrow(() -> new ClientRegistrationException("not found client " + clientId));
         Set<AuthAuthorityVo> authAuthorityVos = new HashSet<>();
         AuthClientVo authClientVo = new AuthClientVo(client.getClientName(), client.getPassword(), client.getResourceIds(), client.getScope(), client.getGrantTypes(), client.getRegisteredRedirectUri(), authAuthorityVos, client.getAccessTokenValiditySeconds(), client.getRefreshTokenValiditySeconds(), null);
@@ -44,4 +48,6 @@ public class ClientServiceImpl implements ClientService {
         }
         return authClientVo;
     }
+
+
 }
