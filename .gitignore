@@ -29,4 +29,5 @@ nbdist/
 .mvn
 *.cmd
 mvnw
+**/target/**
 
