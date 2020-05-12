@@ -11,25 +11,25 @@ import java.util.concurrent.TimeUnit;
  * 3.禁止指令重排序
  * @date : 2020/5/4 7:56 下午
  */
-class Resource1 {
-    public boolean flag = true;
-}
-
 public class VolatileDemo {
-    public static volatile boolean flag = true;
+    public static boolean flag = false;
 
-    public static void main(String[] args) {
-        Resource1 resource1 = new Resource1();
+    public static void main(String[] args) throws Exception {
         new Thread(() -> {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            System.out.println("waiting data...");
+            while (!flag) {
             }
-            flag = false;
-        }).start();
-        while (flag) {
+            System.out.println("success...");
+        }, "线程1").start();
+        TimeUnit.SECONDS.sleep(1);
+        new Thread(() -> {
+            changeFlag();
+        }, "线程2").start();
+    }
 
-        }
+    public static void changeFlag() {
+        System.out.println("change flag start...");
+        flag = true;
+        System.out.println("change flag end...");
     }
 }
