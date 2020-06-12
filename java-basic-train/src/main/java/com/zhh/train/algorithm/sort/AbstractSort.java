@@ -8,17 +8,27 @@ package com.zhh.train.algorithm.sort;
  * @since : 2020/6/2 4:07 下午
  */
 public abstract class AbstractSort {
-    protected Comparable[] unsorted;
 
     /**
-     * 判断索引i处元素是否大于索引j处元素
+     * 判断a是否大于b
      *
-     * @param i
-     * @param j
+     * @param a
+     * @param b
      * @return
      */
-    protected boolean greater(int i, int j) {
-        return this.unsorted[i].compareTo(this.unsorted[j]) > 0;
+    protected static boolean greater(Comparable a, Comparable b) {
+        return a.compareTo(b) > 0;
+    }
+
+    /**
+     * 判断a是否小于b
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    protected static boolean less(Comparable a, Comparable b) {
+        return a.compareTo(b) < 0;
     }
 
     /**
@@ -27,9 +37,9 @@ public abstract class AbstractSort {
      * @param i
      * @param j
      */
-    protected void exchange(int i, int j) {
-        Comparable temp = this.unsorted[i];
-        this.unsorted[i] = this.unsorted[j];
-        this.unsorted[j] = temp;
+    protected static void exchange(Comparable[] array, int i, int j) {
+        Comparable temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
     }
 }
