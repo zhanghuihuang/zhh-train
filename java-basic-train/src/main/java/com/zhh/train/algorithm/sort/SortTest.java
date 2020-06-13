@@ -1,5 +1,7 @@
 package com.zhh.train.algorithm.sort;
 
+import com.zhh.train.algorithm.sort.senior.QuickSort;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -26,9 +28,9 @@ public class SortTest {
         //BubbleSort.sort(nums, true);
         //SelectionSort.sort(nums, true);
         //InsertionSort.sort(nums, true);
-        ShellSort.sort(nums);
+        //ShellSort.sort(nums, true);
         //MergeSort.sort(nums);
-        //QuickSort.sort(nums);
+        QuickSort.sort(nums);
         long end = System.currentTimeMillis();
         System.out.println("排序时间:" + (end - start) + "ms");
         if (batch <= 100) {

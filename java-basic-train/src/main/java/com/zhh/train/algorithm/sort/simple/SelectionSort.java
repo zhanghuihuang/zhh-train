@@ -1,4 +1,6 @@
-package com.zhh.train.algorithm.sort;
+package com.zhh.train.algorithm.sort.simple;
+
+import com.zhh.train.algorithm.sort.AbstractSort;
 
 import java.util.Arrays;
 
@@ -6,10 +8,10 @@ import java.util.Arrays;
  * @author : zhanghuihuang
  * @description : zhh-train
  * <pre>
- *     选择排序:每一轮假设未排序部分的第一个元素为最小索引,一次往后遍历,找出最小索引,然后跟未排序第一个元素交换
- *     选择最小值往前放
+ *     选择排序:默认选未排序数组第一个为最小,然后从未排序第二个元素起,跟最小值比较,如果更小,则更新最小索引
+ *     每一轮选择出最小元素索引,然后跟未排序的第一个元素交换,进行n-1轮
  * </pre>
- * @since : 2020/6/11 10:31 上午
+ * @since : 2020/6/12 1:53 下午
  */
 public class SelectionSort extends AbstractSort {
     public static void sort(Comparable[] unsorted) {
@@ -17,20 +19,20 @@ public class SelectionSort extends AbstractSort {
     }
 
     public static void sort(Comparable[] unsorted, boolean printFlow) {
-        boolean printDetail = unsorted.length <= 10;
-        //确定选择最小元素的轮数n-1轮
         for (int i = 0; i < unsorted.length - 1; i++) {
             int minIndex = i;
-            //每轮默认以i为最小元素索引,从下一个开始比较
+            if (printFlow && unsorted.length <= 10) {
+                System.out.println("\t初始最小索引/值:" + minIndex + "/" + unsorted[minIndex]);
+            }
             for (int j = i + 1; j < unsorted.length; j++) {
                 if (greater(unsorted[minIndex], unsorted[j])) {
                     minIndex = j;
                 }
-                if (printFlow && printDetail) {
-                    System.out.println("\t目前最小索引:" + minIndex);
+                if (printFlow && unsorted.length <= 10) {
+                    System.out.println("\t最小索引/值:" + minIndex + "/" + unsorted[minIndex]);
                 }
             }
-            if (i != minIndex) {
+            if (minIndex != i) {
                 exchange(unsorted, minIndex, i);
             }
             if (printFlow) {
