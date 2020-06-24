@@ -4,21 +4,21 @@ apiVersion: v1
 kind: ReplicationController
 metadata:
   # RC的名称,全局唯一
-  name: tomcat
+  name: myweb
 spec:
   # Pod副本期望数
-  replicas: 1
+  replicas: 2
   selector:
     # 符合目标的pod拥有此标签
-    app: tomcat
+    app: myweb
   template:       # 根据此模板创建pod副本
     metadata:
       labels:
-        app: tomcat
+        app: myweb
     spec:
       containers:
-        - name: tomcat
-          image: "docker.io/tomcat:10-jdk11-openjdk"
+        - name: myweb
+          image: kubeguide/tomcat-app:v2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

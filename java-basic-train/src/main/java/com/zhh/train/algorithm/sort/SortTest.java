@@ -1,6 +1,6 @@
 package com.zhh.train.algorithm.sort;
 
-import com.zhh.train.algorithm.sort.senior.QuickSort;
+import com.zhh.train.algorithm.sort.comparable.senior.QuickSort;
 
 import java.util.Arrays;
 import java.util.Random;
