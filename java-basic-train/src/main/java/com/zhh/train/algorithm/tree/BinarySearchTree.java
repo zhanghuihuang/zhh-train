@@ -3,9 +3,6 @@ package com.zhh.train.algorithm.tree;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author : page
  * @project : zhh-train
@@ -25,374 +22,136 @@ public class BinarySearchTree<Key extends Comparable, Value> {
 
     @Data
     @AllArgsConstructor
-    public class Node {
-        Key key;
-        Value value;
-        Node left;
-        Node right;
+    private class Node {
+        private Key key;
+        private Value value;
+        private Node left;
+        private Node right;
     }
 
-    /**
-     * 向树中插入一个键值对
-     *
-     * @param key
-     * @param value
-     */
+    //插入
     public void put(Key key, Value value) {
-        root = put(root, key, value);
+        root = this.put(root, key, value);
     }
 
     /**
-     * 在子树node插入一个键值对,并返回添加后的新树
+     * 往子树tree添加子结点,并返回添加后的新树
      *
-     * @param node
+     * @param tree
      * @param key
      * @param value
-     * @return
      */
-    public Node put(Node node, Key key, Value value) {
-        if (key == null) {
-            throw new IllegalArgumentException("键不能为空");
-        }
-        if (node == null) {
-            //如果树为空,则返回一个结点的树
-            size++;
-            return new Node(key, value, null, null);
+    private Node put(Node tree, Key key, Value value) {
+        if (tree == null) {
+            //如果subTree为空,表示是空树
+            tree = new Node(key, value, null, null);
         } else {
-            //比较key和当前结点的key大小
-            int cmp = key.compareTo(node.key);
-            if (cmp > 0) {
-                //如果大于0,表示插入的键比当前结点大,往右子结点继续找,并让我的右子结点指向返回值
-                node.right = put(node.right, key, value);
-            } else if (cmp < 0) {
-                //如果下于0,表示插入的键比当前结点小,往左子结点继续找,并让我的左子结点指向返回值
-                node.left = put(node.left, key, value);
+            //如果子树不为空,比较key和子树key的大小,比它小,则往左子树继续找,比它大则往右子树找,相等则替换掉value值
+            int result = key.compareTo(tree.getKey());
+            if (result > 0) {
+                //往右子树找
+                tree.right = put(tree.getRight(), key, value);
+            } else if (result < 0) {
+                //往左子树
+                tree.left = put(tree.getLeft(), key, value);
             } else {
-                //如果等于,则替换值
-                node.value = value;
+                //替换掉值
+                tree.setValue(value);
             }
         }
-        return node;
+        //树大小加1
+        size++;
+        return tree;
     }
 
-    /**
-     * 根据key查找树种对应的value
-     *
-     * @param key
-     * @return
-     */
+    //查找
     public Value get(Key key) {
         return get(root, key);
     }
 
     /**
-     * 查找指定树node中的key对应的value
+     * 在结点node下查找key的值
      *
-     * @param node
+     * @param tree
      * @param key
      * @return
      */
-    public Value get(Node node, Key key) {
-        if (node == null || key == null) {
+    private Value get(Node tree, Key key) {
+        if (tree == null) {
             return null;
+        }
+        int result = key.compareTo(tree.getKey());
+        if (result > 0) {
+            return get(tree.getRight(), key);
+        } else if (result < 0) {
+            return get(tree.getLeft(), key);
         } else {
-            int cmp = key.compareTo(node.key);
-            if (cmp > 0) {
-                //如果大于0,表示插入的键比当前结点大,往右子结点继续找,直到找到为止
-                return get(node.right, key);
-            } else if (cmp < 0) {
-                //如果下于0,表示插入的键比当前结点小,往左子结点继续找,直到找到为止
-                return get(node.left, key);
-            } else {
-                //如果等于,就是找到返回
-                return node.value;
-            }
+            return tree.getValue();
         }
     }
 
     /**
-     * 删除树中对应的键值对
-     * 1.根据key找到这个删除结点
-     * 2.找到删除结点的右子树中的最小结点顶替他的位置
-     * 3.如果没有右子树,则左子结点直接顶上
+     * 删除一个节点
+     * 删除某个节点,就从这个结点的右子树找一个最小值结点顶替
+     * 如果右子树有空,则左子树顶上
      *
      * @param key
      */
     public void delete(Key key) {
-        root = delete(root, key);
+        delete(root, key);
     }
 
     /**
-     * 删除指定树node中对应的键值对,并返回删除后的新树
+     * 删除子树下的key,并返回删除后的新树
      *
-     * @param node
+     * @param tree
      * @param key
      * @return
      */
-    public Node delete(Node node, Key key) {
-        if (node == null || key == null) {
-            return node;
+    private Node delete(Node tree, Key key) {
+        if (tree == null) {
+            return null;
         }
-        int cmp = key.compareTo(node.key);
-        if (cmp > 0) {
-            //如果大于0,表示插入的键比当前结点大,往右子结点继续找,直到找到为止
-            node.right = delete(node.right, key);
-        } else if (cmp < 0) {
-            //如果下于0,表示插入的键比当前结点小,往左子结点继续找,直到找到为止
-            node.left = delete(node.left, key);
+        int result = key.compareTo(tree.key);
+        if (result > 0) {
+            tree.right = delete(tree.right, key);
+        } else if (result < 0) {
+            tree.left = delete(tree.left, key);
         } else {
+            //长度减小
             size--;
-            //如果等于,就是找到,真正的删除操作
-            if (node.right == null) {
-                //如果右子树为空,则让左子结点顶替
-                return node.left;
+            if (tree.right == null) {
+                return tree.left;
             }
-            if (node.left == null) {
-                //如果左子树为空,则让右子结点顶替
-                return node.right;
+            if (tree.left == null) {
+                return tree.right;
             }
-            //如果左右子树都不为空,则找到右子树的最小结点
-            Node min = node.right;
-            while (min.left != null) {
-                if (min.left.left == null) {
-                    if (min.left.right == null) {
-                        min = min.left;
-                    } else {
-                        min.left = min.left.right;
-                    }
-                    break;
+            //先找到右子树的最小节点
+            Node minNode = tree.right;
+            while (minNode.left != null) {
+                minNode = minNode.left;
+            }
+            //删除右子树中的最小结点
+            Node n = tree.right;
+            while (n.left != null) {
+                if (n.left.left == null) {
+                    n.left = null;
                 } else {
-                    min = min.left;
+                    n = n.left;
                 }
             }
-            //让右子树的最小结点顶替删除结点
-            min.left = node.left;
-            min.right = node.right;
-            node = min;
+            //让最小结点的左右子树分别指向删除结点的左右子树
+            minNode.right = tree.right;
+            minNode.left = tree.left;
+            //让删除结点的父结点指向最小结点
+            tree = minNode;
+
         }
-        return node;
+        return tree;
     }
 
-    /**
-     * 获取树中的元素个数
-     *
-     * @return
-     */
+    //获取树长度
     public int size() {
         return size;
-    }
-
-    public Key minKey() {
-        return minKey(root);
-    }
-
-    public Key minKey(Node x) {
-        if (x == null) {
-            return null;
-        } else {
-            if (x.left != null) {
-                return minKey(x.left);
-            } else {
-                return x.getKey();
-            }
-        }
-    }
-
-    public Key maxKey() {
-        return maxKey(root);
-    }
-
-    public Key maxKey(Node x) {
-        if (x == null) {
-            return null;
-        } else {
-            if (x.right != null) {
-                return maxKey(x.right);
-            } else {
-                return x.getKey();
-            }
-        }
-    }
-
-    public List<Key> preErgodic() {
-        List<Key> keys = new ArrayList<Key>();
-        this.preErgodic(root, keys);
-        return keys;
-    }
-
-    public void preErgodic(Node x, List<Key> keys) {
-        if (x == null) {
-            return;
-        } else {
-            keys.add(x.getKey());
-            if (x.left != null) {
-                preErgodic(x.left, keys);
-            }
-            if (x.right != null) {
-                preErgodic(x.right, keys);
-            }
-        }
-    }
-
-    public List<Key> middleErgodic() {
-        List<Key> keys = new ArrayList<Key>();
-        this.middleErgodic(root, keys);
-        return keys;
-    }
-
-    public void middleErgodic(Node x, List<Key> keys) {
-        if (x == null) {
-            return;
-        } else {
-            if (x.left != null) {
-                middleErgodic(x.left, keys);
-            }
-            keys.add(x.getKey());
-            if (x.right != null) {
-                middleErgodic(x.right, keys);
-            }
-        }
-    }
-
-    public List<Key> postErgodic() {
-        List<Key> keys = new ArrayList<Key>();
-        this.postErgodic(root, keys);
-        return keys;
-    }
-
-    public void postErgodic(Node x, List<Key> keys) {
-        if (x == null) {
-            return;
-        } else {
-            if (x.left != null) {
-                postErgodic(x.left, keys);
-            }
-            if (x.right != null) {
-                postErgodic(x.right, keys);
-            }
-            keys.add(x.getKey());
-        }
-    }
-
-    public List<Key> layerErgodic() {
-        List<Key> keys = new ArrayList<Key>();
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        nodes.add(root);
-        this.layerErgodic(nodes, keys);
-        return keys;
-    }
-
-    public List<Key> layerErgodic1() {
-        List<Key> keys = new ArrayList<Key>();
-        List<Node> nodes = new ArrayList<Node>();
-        nodes.add(root);
-        while (!nodes.isEmpty()) {
-            List<Node> nextLayer = new ArrayList<Node>();
-            for (int i = 0; i < nodes.size(); i++) {
-                Node node = nodes.get(i);
-                keys.add(node.getKey());
-                if (node.left != null) {
-                    nextLayer.add(node.left);
-                }
-                if (node.right != null) {
-                    nextLayer.add(node.right);
-                }
-            }
-            nodes = nextLayer;
-        }
-        return keys;
-    }
-
-    public void layerErgodic(List<Node> xs, List<Key> keys) {
-        if (xs == null || xs.isEmpty()) {
-            return;
-        } else {
-            List<Node> nextLayer = new ArrayList<Node>();
-            for (Node x : xs) {
-                keys.add(x.getKey());
-                if (x.left != null) {
-                    nextLayer.add(x.left);
-                }
-                if (x.right != null) {
-                    nextLayer.add(x.right);
-                }
-            }
-            layerErgodic(nextLayer, keys);
-        }
-    }
-
-    /**
-     * 树的最大深度
-     *
-     * @return
-     */
-    public int maxDepth() {
-        return maxDepth(root);
-    }
-
-    /**
-     * 指定结点的最大深度
-     *
-     * @param x
-     * @return
-     */
-    public int maxDepth(Node x) {
-        int maxDepth = 0;
-        if (x == null) {
-            return maxDepth;
-        } else {
-            List<Node> nodes = new ArrayList<Node>();
-            nodes.add(x);
-            while (!nodes.isEmpty()) {
-                maxDepth++;
-                List<Node> nextLayer = new ArrayList<Node>();
-                for (int i = 0; i < nodes.size(); i++) {
-                    Node node = nodes.get(i);
-                    if (node.left != null) {
-                        nextLayer.add(node.left);
-                    }
-                    if (node.right != null) {
-                        nextLayer.add(node.right);
-                    }
-                }
-                nodes = nextLayer;
-            }
-        }
-        return maxDepth;
-    }
-
-    /**
-     * 树的最大深度
-     *
-     * @return
-     */
-    public int maxDepth1() {
-        return maxDepth1(root);
-    }
-
-    /**
-     * 指定结点的最大深度
-     *
-     * @param x
-     * @return
-     */
-    public int maxDepth1(Node x) {
-        int maxDepth = 0;
-        if (x == null) {
-            return maxDepth;
-        } else {
-            //左子树的最大深度
-            int maxL = 0;
-            if (x.left != null) {
-                maxL = maxDepth1(x.left);
-            }
-            //右子树的最大深度
-            int maxR = 0;
-            if (x.right != null) {
-                maxR = maxDepth1(x.right);
-            }
-            maxDepth = maxL > maxR ? (maxL + 1) : (maxR + 1);
-        }
-        return maxDepth;
     }
 }

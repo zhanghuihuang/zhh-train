@@ -1,6 +1,6 @@
 package com.zhh.train.algorithm.sort;
 
-import com.zhh.train.algorithm.sort.comparable.senior.QuickSort;
+import com.zhh.train.algorithm.sort.uncomparable.RadixSort;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -15,11 +15,15 @@ import java.util.Random;
 public class SortTest {
     public static void main(String[] args) {
         Random random = new Random();
-        int batch = 10;
-        int seed = 1000;
+        int batch = 100;
+        int seed = 10000;
         Integer[] nums = new Integer[batch];
+        int maxValue = 0;
         for (int i = 0; i < batch; i++) {
             nums[i] = random.nextInt(seed);
+            if (maxValue <= nums[i]) {
+                maxValue = nums[i];
+            }
         }
         if (batch <= 100) {
             System.out.println("排序前:" + Arrays.toString(nums));
@@ -30,7 +34,9 @@ public class SortTest {
         //InsertionSort.sort(nums, true);
         //ShellSort.sort(nums, true);
         //MergeSort.sort(nums);
-        QuickSort.sort(nums);
+        //QuickSort.sort(nums);
+        //CountingSort.sort(nums, maxValue);
+        RadixSort.sort(nums, String.valueOf(seed).length());
         long end = System.currentTimeMillis();
         System.out.println("排序时间:" + (end - start) + "ms");
         if (batch <= 100) {
